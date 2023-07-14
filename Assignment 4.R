@@ -1,9 +1,16 @@
 #*#BTC1855H - Assignment 4: Martians are coming - Data Wrangling 
 #*Soumya Shastri
 
+#Read the data from the CSV file into a data frame (Ensure the file is in your working directory)
+ufo.data <- read.csv("ufo_subset.csv")
+#To remove spaces in the column names and replace with "."
+unspaced_data <- make.names(names(ufo.data))
+print(unspaced_data)
+
+
+
 
 #Instructions: 
-#Read the data into a data frame (make sure that column names do not have spaces in them).
 #Don't forget to visually inspect and compare your data frame to the original csv to make sure that all data is loaded as expected.
 #Find the rows where Shape information is missing and impute with "unknown".
 #Remove the rows that do not have Country information.
