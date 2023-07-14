@@ -14,7 +14,7 @@ print(unspaced_data)
 #Replace missing values for shape with "unknown"
 ufo.data1 <- ufo.data %>%
   mutate(shape = ifelse(is.na(shape), "unknown", shape)) %>%
-  #Extract country info from city column and impute in country (Needs review, and how would we ensure that only 2 letters of the country go in the column)
+  #Extract country info from city column and impute in country ######(Needs review, and how would we ensure that only 2 letters of the country go in the column)######
   ifelse(country == "", 
          sub(".*\\((.*?)\\).*", "\\1", city), 
          country)
@@ -23,17 +23,19 @@ ufo.data1 <- ufo.data %>%
 
 #Convert Datetime and Date_posted columns into appropriate formats
 ufo.data1$date_posted <- as.Date(strptime(ufo.data1$date_posted, format = "%d-%m-%Y"))
-ufo.data1$datetime <- as.Date(strptime(ufo.data1$datetime, format = "%Y-%m-%d %H:%M")) ##Time disappeared??
+ufo.data1$datetime <- as.Date(strptime(ufo.data1$datetime, format = "%Y-%m-%d %H:%M")) ####Time disappeared??####
 
 #Find all combinations of the word "hoax" in Comments column and create new column "is_hoax"
 ufo.data2 <- ufo.data1 %>%
   mutate(is_hoax = grepl("hoax|HOAX|Hoax", ufo.data1$comments))
 
-
+#Create a table of hoax sightings and country
+hoax_table <- table(ufo.data2$country, ufo.data2$is_hoax)
+#Create a table with percentage of sightings per country
+hoax_percentage <- prop.table(hoax_table, margin = 1) * 100 
+print(hoax_percentage)  
   
-
 #Instructions: 
-#Create a table reporting the percentage of hoax sightings per country.
 #Add another column to the dataset (report_delay) and populate with the time difference in days, between the date of the sighting and the date it was reported.
 #Remove the rows where the sighting was reported before it happened.
 #Create a table reporting the average report_delay per country.
