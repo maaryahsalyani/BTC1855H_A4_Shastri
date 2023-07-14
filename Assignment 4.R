@@ -1,19 +1,23 @@
 #*#BTC1855H - Assignment 4: Martians are coming - Data Wrangling 
 #*Soumya Shastri
 
+#Load required packages (Ensure these are already installed)
+library(dplyr)
+
 #Read the data from the CSV file into a data frame (Ensure the file is in your working directory)
 ufo.data <- read.csv("ufo_subset.csv")
 #To remove spaces in the column names and replace with "."
 unspaced_data <- make.names(names(ufo.data))
 print(unspaced_data)
 
+#Replace missing values for shape with "unknown"
+ufo.data$shape <- replace(ufo.data$shape, ufo.data$shape == "", "unknown")
 
+#Remove rows without country information
+ufo.data$country <- ufo.data %>% filter(ufo.data$country != "")
 
 
 #Instructions: 
-#Don't forget to visually inspect and compare your data frame to the original csv to make sure that all data is loaded as expected.
-#Find the rows where Shape information is missing and impute with "unknown".
-#Remove the rows that do not have Country information.
 #BONUS: For some of the rows where Country column is blank, the country name is found in the City column in brackets. Where Country info is missing, try to extract the information in brackets in the City column and impute that value in the Country column.
 #Convert Datetime and Date_posted columns into appropriate formats
 #NUFORC officials comment on sightings that may be hoax.  Figure out a way (go through the Comments and decide how a proper filter should look like) to identify possible hoax reports. Create a new boolean column "is_hoax", and populate this column with TRUE if the sighting is a possible hoax, FALSE otherwise.
