@@ -14,10 +14,6 @@ print(unspaced_data)
 #Replace missing values for shape with "unknown"
 ufo.data1 <- ufo.data %>%
   mutate(shape = ifelse(is.na(shape), "unknown", shape)) %>%
-  #Extract country info from city column and impute in country ######(Needs review, and how would we ensure that only 2 letters of the country go in the column)######
-  ifelse(country == "", 
-         sub(".*\\((.*?)\\).*", "\\1", city), 
-         country)
   #Remove rows where country column is blank 
   filter(!is.na(country))
 
@@ -40,18 +36,26 @@ ufo.data3 <- ufo.data2 %>% mutate(report_delay = as.numeric(date_posted - dateti
   #Remove the rows that have a negative value (reported before sighted)
   filter(report_delay >= 0) 
 
-#Create table reporting average report delay per country ####Needs review, only giving me one number#####
+#Create table reporting average report delay per country ###NEEDS REVIEW, only giving me one number#####
 average_report_delay <- ufo.data3 %>%
   group_by(country) %>%
-  summarize(average_delay = mean(report_delay, na.rm = T))
+  summarize(average_delay = mean(report_delay))
+print(average_report_delay)
 
 #Data quality of "duration seconds" column and how dealt with
-#* Structure: The values in this column are numeric. This can be confirmed with the following function: 
-
-#* Format: The decimals are not consistent, some values have one decimal place, others two, some zero
+#* Structure: The values in this column are numeric.
+is.numeric(ufo.data3$duration.seconds) #output is TRUE
+#*The values are all positive 
+any(ufo.data3$duration.seconds < 0) #Output returns FALSE
 #* Missing values: 
 which(is.na(ufo.data3$duration.seconds)) #Output returned as zero, indicating that there are no missing values in this column
-#*Range: ??
+#* Format: The decimal precision in the values of the column is inconsistent. Some values have one decimal place, some have two decimal places, and some have no decimal places at all.
+#*In order to fix it, create a sprintf function to indicate that the number should be displayed with two decimal places
+sprintf("%.2f", ufo.data$duration.seconds)
+#*Range: Some values range to years in duration. This seems erroneous, as UFO sightings should not be longer than a day. I would remove anything higher than 86400 seconds.
+ufo.data4 <- ufo.data3 %>%
+  filter(duration.seconds < 86400) %>%
+  filter(duration.seconds > 0) 
 
 #Histogram of duration seconds; log10 used for better visualization 
-hist(log10(ufo.data3$duration.seconds), main= "Histogram of Duration Seconds",xlab = "log10 of Duration seconds",ylab="Frequency")
+hist(log10(ufo.data4$duration.seconds), main= "Histogram of Duration Seconds",xlab = "log10 of Duration seconds",ylab="Frequency")
