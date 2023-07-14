@@ -19,15 +19,20 @@ ufo.data1 <- ufo.data %>%
          sub(".*\\((.*?)\\).*", "\\1", city), 
          country)
   #Remove rows where country column is blank 
-  filter(!is.na(country)) %>%
-  
- 
+  filter(!is.na(country))
+
+#Convert Datetime and Date_posted columns into appropriate formats
+ufo.data1$date_posted <- as.Date(strptime(ufo.data1$date_posted, format = "%d-%m-%Y"))
+ufo.data1$datetime <- as.Date(strptime(ufo.data1$datetime, format = "%Y-%m-%d %H:%M")) ##Time disappeared??
+
+#Find all combinations of the word "hoax" in Comments column and create new column "is_hoax"
+ufo.data2 <- ufo.data1 %>%
+  mutate(is_hoax = grepl("hoax|HOAX|Hoax", ufo.data1$comments))
+
+
   
 
 #Instructions: 
-#BONUS: For some of the rows where Country column is blank, the country name is found in the City column in brackets. Where Country info is missing, try to extract the information in brackets in the City column and impute that value in the Country column.
-#Convert Datetime and Date_posted columns into appropriate formats
-#NUFORC officials comment on sightings that may be hoax.  Figure out a way (go through the Comments and decide how a proper filter should look like) to identify possible hoax reports. Create a new boolean column "is_hoax", and populate this column with TRUE if the sighting is a possible hoax, FALSE otherwise.
 #Create a table reporting the percentage of hoax sightings per country.
 #Add another column to the dataset (report_delay) and populate with the time difference in days, between the date of the sighting and the date it was reported.
 #Remove the rows where the sighting was reported before it happened.
