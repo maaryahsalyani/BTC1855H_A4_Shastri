@@ -46,11 +46,12 @@ average_report_delay <- ufo.data3 %>%
   summarize(average_delay = mean(report_delay, na.rm = T))
 
 #Data quality of "duration seconds" column and how dealt with
+#* Structure: The values in this column are numeric. This can be confirmed with the following function: 
+
 #* Format: The decimals are not consistent, some values have one decimal place, others two, some zero
 #* Missing values: 
 which(is.na(ufo.data3$duration.seconds)) #Output returned as zero, indicating that there are no missing values in this column
 #*Range: ??
 
-#Histogram: 
-hist(log(ufo.data3$duration.seconds)) ## Fix the title
-
+#Histogram of duration seconds; log10 used for better visualization 
+hist(log10(ufo.data3$duration.seconds), main= "Histogram of Duration Seconds",xlab = "log10 of Duration seconds",ylab="Frequency")
