@@ -36,10 +36,8 @@ ufo.data3 <- ufo.data2 %>% mutate(report_delay = as.numeric(date_posted - dateti
   #Remove the rows that have a negative value (reported before sighted)
   filter(report_delay >= 0) 
 
-#Create table reporting average report delay per country ###NEEDS REVIEW, only giving me one number#####
-average_report_delay <- ufo.data3 %>%
-  group_by(country) %>%
-  summarize(average_delay = mean(report_delay))
+#Create table reporting average report delay per country
+average_report_delay <- aggregate(report_delay ~ country, ufo.data3, mean)
 print(average_report_delay)
 
 #Data quality of "duration seconds" column and how dealt with
