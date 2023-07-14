@@ -7,7 +7,7 @@ library(dplyr)
 #Read the data from the CSV file into a data frame (Ensure the file is in your working directory)
 ufo.data <- read.csv(("ufo_subset.csv"), na.strings = c("", "NA")) #na.strings function to replace all missing data, that was found while inspecting,with na
 
-#To remove spaces in the column names and replace with "."
+#To remove spaces in the column names
 unspaced_data <- make.names(names(ufo.data))
 print(unspaced_data)
 
@@ -34,10 +34,18 @@ hoax_table <- table(ufo.data2$country, ufo.data2$is_hoax)
 #Create a table with percentage of sightings per country
 hoax_percentage <- prop.table(hoax_table, margin = 1) * 100 
 print(hoax_percentage)  
-  
+
+#Add a report_delay column to dataset
+ufo.data3 <- ufo.data2 %>% mutate(report_delay = as.numeric(date_posted - datetime)) %>%
+  #Remove the rows that have a negative value (reported before sighted)
+  filter(report_delay >= 0) 
+
+#Create table reporting average report delay per country ####Needs review, only giving me one number#####
+average_report_delay <- ufo.data3 %>%
+  group_by(country) %>%
+  summarize(average_delay = mean(report_delay, na.rm = T))
+
+
 #Instructions: 
-#Add another column to the dataset (report_delay) and populate with the time difference in days, between the date of the sighting and the date it was reported.
-#Remove the rows where the sighting was reported before it happened.
-#Create a table reporting the average report_delay per country.
 #Check the data quality (missingness, format, range etc) of the "duration seconds" column. Explain what kinds of problems you have identified and how you chose to deal with them, in your comments.
 #Create a histogram using the "duration seconds" column.
