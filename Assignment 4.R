@@ -5,17 +5,24 @@
 library(dplyr)
 
 #Read the data from the CSV file into a data frame (Ensure the file is in your working directory)
-ufo.data <- read.csv("ufo_subset.csv")
+ufo.data <- read.csv(("ufo_subset.csv"), na.strings = c("", "NA")) #na.strings function to replace all missing data, that was found while inspecting,with na
+
 #To remove spaces in the column names and replace with "."
 unspaced_data <- make.names(names(ufo.data))
 print(unspaced_data)
 
 #Replace missing values for shape with "unknown"
-ufo.data$shape <- replace(ufo.data$shape, ufo.data$shape == "", "unknown")
-
-#Remove rows without country information
-ufo.data$country <- ufo.data %>% filter(ufo.data$country != "")
-
+ufo.data1 <- ufo.data %>%
+  mutate(shape = ifelse(is.na(shape), "unknown", shape)) %>%
+  #Extract country info from city column and impute in country (Needs review, and how would we ensure that only 2 letters of the country go in the column)
+  ifelse(country == "", 
+         sub(".*\\((.*?)\\).*", "\\1", city), 
+         country)
+  #Remove rows where country column is blank 
+  filter(!is.na(country)) %>%
+  
+ 
+  
 
 #Instructions: 
 #BONUS: For some of the rows where Country column is blank, the country name is found in the City column in brackets. Where Country info is missing, try to extract the information in brackets in the City column and impute that value in the Country column.
