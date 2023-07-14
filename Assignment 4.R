@@ -23,7 +23,7 @@ ufo.data1 <- ufo.data %>%
 
 #Convert Datetime and Date_posted columns into appropriate formats
 ufo.data1$date_posted <- as.Date(strptime(ufo.data1$date_posted, format = "%d-%m-%Y"))
-ufo.data1$datetime <- as.Date(strptime(ufo.data1$datetime, format = "%Y-%m-%d %H:%M")) ####Time disappeared??####
+ufo.data1$datetime <- as.Date(strptime(ufo.data1$datetime, format = "%Y-%m-%d %H:%M"))
 
 #Find all combinations of the word "hoax" in Comments column and create new column "is_hoax"
 ufo.data2 <- ufo.data1 %>%
@@ -45,7 +45,12 @@ average_report_delay <- ufo.data3 %>%
   group_by(country) %>%
   summarize(average_delay = mean(report_delay, na.rm = T))
 
+#Data quality of "duration seconds" column and how dealt with
+#* Format: The decimals are not consistent, some values have one decimal place, others two, some zero
+#* Missing values: 
+which(is.na(ufo.data3$duration.seconds)) #Output returned as zero, indicating that there are no missing values in this column
+#*Range: ??
 
-#Instructions: 
-#Check the data quality (missingness, format, range etc) of the "duration seconds" column. Explain what kinds of problems you have identified and how you chose to deal with them, in your comments.
-#Create a histogram using the "duration seconds" column.
+#Histogram: 
+hist(log(ufo.data3$duration.seconds)) ## Fix the title
+
