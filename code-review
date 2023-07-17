@@ -1,0 +1,14 @@
+Code review 
+Line 8: Good job removing the missing value values the same time as loading the data set using the na.strings parameter
+Spaces effectively removed from names 
+Line 14: effective use of the pipe operator to chain multiple operations (replace missing values with “unknown” and remove rows where country column is blank)
+Maybe add “print()” at the end of operations so that it is easy for the user to view the outcomes while reading the code 
+Can also consider using more descriptive names for variables (ie. instead of ufo.data1, can say updated_data) to avoid errors 
+Line 22: please check over: the code, ufo.data1$datetime <- as.Date(strptime(ufo.data1$datetime, format = "%Y-%m-%d %H:%M")), does not provide the time when printed into the console. Consider using the  as.POSIXct function as it converts the date into a format that accounts for the time component 
+Line 25: Good application of the mutate and grepl function to find all combinations of the word "hoax" in comments column and create new column 
+Hoax percentage table appears to display correct values and countries 
+Line 37:  Appears to correctly have removed the rows that have a report before sighted
+Good analysis of the “duration seconds” column. You ensured that all values were numeric, positive, checked for missing values and the range 
+Good critical thinking applied when considering duration seconds greater than 86400 (over 1 day), and effectively removing them in the histogram 
+Line 61: Histogram looks concise, well labeled, and easy to read. Good use of log10 to make axis values smaller  
+Overall, code is clearly and concisely documented 
